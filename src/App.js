@@ -33,7 +33,7 @@ class App extends Component {
             Learn React
           </a>
         </header>
-        {timestamp && <p>{timestamp}</p>}
+        {timestamp && <p>Timestamp: {timestamp}</p>}
       </div>
     );
   }
