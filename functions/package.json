@@ -11,6 +11,12 @@
   },
   "dependencies": {
     "express": "^4.16.4",
+    "morgan": "^1.9.1",
+    "body-parser": "^1.18.3",
+    "connect-flash": "^0.1.1",
+    "cookie-session": "^2.0.0-beta.3",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "firebase-admin": "~6.0.0",
     "firebase-functions": "^2.0.3"
   },

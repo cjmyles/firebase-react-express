@@ -1,8 +1,10 @@
 # Firebase React Express
 
-Firebase application to enable React frontend using Firebase Hosting and Node Express backend using Firebase Functions.
+Sandbox application to demonstrate the compatibility between a React app and an Express API, both running on Firebase.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and the Firebase `init` command (as per https://www.youtube.com/watch?v=LOeioOKUKI8&vl=en).
+In this particular example the React and Express apps are stored in the same repository and are deployed simulataneously, although they could be broken out if required.
+
+The apps were bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and the Firebase `init` command (as per https://www.youtube.com/watch?v=LOeioOKUKI8&vl=en).
 
 The code has been configured to enable local development, as well as deployment to Firebase.
 
@@ -20,11 +22,15 @@ $ code .
 
 # Associate With A Firebase Project
 
+This is required to enable deployment but is not required for local development.
+
 ```bash
 $ firebase use --add
 ```
 
-# Run Functions Locally
+# Local Development
+
+## Express
 
 ```bash
 $ firebase serve
@@ -34,28 +40,28 @@ $ firebase serve
 
 You should see a message in terminal containing the functions url, something like [http://localhost:5001/node-test-f2063/us-central1/api](http://localhost:5001/node-test-f2063/us-central1/api).
 
-Copy this URL and paste it into `package.json`:
+Copy this URL and paste it into the `package.json` file in the root (not the `package.json` file in the `functions` directory):
 
 ```json
 "proxy": "http://localhost:5001/node-test-f2063/us-central1/api"
 ```
 
-Open a browser and navigate to [http://localhost:5001/node-test-f2063/us-central1/api/api/timestamp](http://localhost:5001/node-test-f2063/us-central1/api/api/timestamp). This is tied to the code in `functions/index.js`:
+Open a browser and navigate to [http://localhost:5001/node-test-f2063/us-central1/api/api/basic](http://localhost:5001/node-test-f2063/us-central1/api/api/timestamp) to see a test response. This is tied to the code in `functions/index.js` (an abbreviated version is shown below):
 
 ```js
-const functions = require("firebase-functions");
-const express = require("express");
+const functions = require('firebase-functions');
+const express = require('express');
 
 const app = express();
 
-app.get("/api/timestamp", (req, res) => {
-  res.send(`${Date.now()}`);
+app.get('/api/basic', (req, res) => {
+  res.send({ success: true });
 });
 
 exports.api = functions.https.onRequest(app);
 ```
 
-# Run React Locally
+## React
 
 In a separate terminal window, run the following (we should now have two processes running concurrently):
 
@@ -63,22 +69,22 @@ In a separate terminal window, run the following (we should now have two process
 $ npm start
 ```
 
+**Note:** You could create a Docker script to handle both of these terminal processes
+
 You should see a message in terminal containing the React url, something like: [http://localhost:3000/](http://localhost:3000/)
 
-A browser window should open automatically. If not, open a browser and navigate to [http://localhost:3000/](http://localhost:3000/) where you should see your React app running. More importantly, you should see a timestamp at the bottom of the window (and logged to the console).
+A browser window should open automatically. If not, open a browser and navigate to [http://localhost:3000/](http://localhost:3000/) where you should see your React app running. More importantly, you should see the success statuses of a few simple API requests.
 
-We can see from `src/App.js` that we are making a call to the API in the `componentDidMount` function:
+We can see from `src/App.js` that we are making a call to the API (an abbreviated version is shown below):
 
 ```js
-async componentDidMount() {
-  const response = await fetch('/api/timestamp');
-  const timestamp = await response.json();
-  console.log(timestamp);
-  this.setState({ timestamp });
+  const response = await fetch('/api/basic');
+  const read = await response.json(); // { success: true }
+  this.setState({ read });
 }
 ```
 
-Since we added the `proxy` field to `package.json`, any `fetch` request to `/api/**` will be proxied to our API.
+Since we added the `proxy` field to `package.json`, any `fetch` request to `/api/**` will be proxied to our API. This not only saves us having to use the full API address in our requests, but it also means we're not making cross-origin requests and so therefore do not need to configure CORS in our API (win!)
 
 # Deployment
 
@@ -104,3 +110,5 @@ This corresponds to the name of the `functions` we set in `functions/index.js` a
 ```js
 exports.api = functions.https.onRequest(app);
 ```
+
+This means that a request such as `/api/basic` is proxied to `http://localhost:5001/node-test-f2063/us-central1/api` - note though that the urls are appended, so our functions app would need to handle `/api/basic` in the routes (and not just `/basic`), which means that the fully qualified url would look something like `http://localhost:5001/node-test-f2063/us-central1/api/api/basic` (notice the double use of the word `api` here).
