@@ -18,6 +18,10 @@
   color: white;
 }
 
+.App-status {
+  text-align: left;
+}
+
 .App-link {
   color: #61dafb;
 }

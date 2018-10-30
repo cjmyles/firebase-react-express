@@ -33,13 +33,16 @@ const app = express();
 app.use(require('body-parser').urlencoded({ extended: true }));
 
 // Use cookie session
-app.use(
-  session({
-    name: 'session',
-    secret: '123456789',
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-  })
-);
+app.set('trust proxy', 1); // trust first proxy
+
+const sessionConfig = {
+  name: '__session',
+  secret: '123456789',
+  maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  secure: app.get('env') === 'production' ? true : false,
+};
+
+app.use(session(sessionConfig));
 
 // Log requests
 app.use(morgan('dev'));
@@ -90,11 +93,19 @@ app.post(
 
 app.get('/api/logout', (req, res) => {
   req.logout();
-  res.redirect('/');
+  res.send({ success: true });
 });
 
 app.get('/api/profile', (req, res) => {
   res.send(req.user);
+});
+
+app.get('/api/debug', (req, res) => {
+  res.send({
+    env: app.get('env'),
+    sessionConfig,
+    headers: req.headers,
+  });
 });
 
 exports.api = functions.https.onRequest(app);

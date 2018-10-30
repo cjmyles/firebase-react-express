@@ -42,7 +42,7 @@ class App extends Component {
       headers: {
         'Content-Type': 'application/json',
       },
-      // credentials: 'include',
+      credentials: 'include',
       body: JSON.stringify({
         username: '36nil',
         password: '123',
@@ -53,11 +53,23 @@ class App extends Component {
   }
 
   async profile() {
-    const response = await fetch('/api/profile', {
-      // credentials: 'include'
+    try {
+      const response = await fetch('/api/profile', {
+        // credentials: 'include',
+      });
+      const user = await response.json();
+      this.setState({ user });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async debug() {
+    const response = await fetch('/api/debug', {
+      // credentials: 'include',
     });
-    const user = await response.json();
-    this.setState({ user });
+    const debug = await response.json();
+    console.log(debug);
   }
 
   async componentDidMount() {
@@ -68,6 +80,7 @@ class App extends Component {
 
     await this.login();
     this.profile();
+    this.debug();
   }
 
   render() {
@@ -77,13 +90,15 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <ul>
+          <ul className="App-status">
             <li>Create: {create ? 'true' : 'false'}</li>
             <li>Read: {read ? 'true' : 'false'}</li>
             <li>Update: {update ? 'true' : 'false'}</li>
             <li>Delete: {remove ? 'true' : 'false'}</li>
             <li>Login: {login ? 'true' : 'false'}</li>
-            <li>User: {user && JSON.stringify(user)}</li>
+            <li>
+              User: <code>{user && JSON.stringify(user)}</code>
+            </li>
           </ul>
           <p>
             Edit <code>src/App.js</code> and save to reload.
