@@ -10,15 +10,17 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
-    "express": "^4.16.4",
-    "morgan": "^1.9.1",
     "body-parser": "^1.18.3",
     "connect-flash": "^0.1.1",
+    "connect-session-firebase": "^5.13.0",
     "cookie-session": "^2.0.0-beta.3",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "firebase-admin": "^6.0.0",
+    "firebase-functions": "^2.0.3",
+    "morgan": "^1.9.1",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0",
-    "firebase-admin": "~6.0.0",
-    "firebase-functions": "^2.0.3"
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "eslint": "^4.12.0",

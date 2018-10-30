@@ -1,10 +1,19 @@
 const functions = require('firebase-functions');
 const express = require('express');
-const session = require('cookie-session');
 const morgan = require('morgan');
+// const session = require('cookie-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const flash = require('connect-flash');
+const session = require('express-session');
+const FirebaseStore = require('connect-session-firebase')(session);
+const firebase = require('firebase-admin');
+const ref = firebase.initializeApp({
+  credential: firebase.credential.cert(
+    'node-test-f2063-firebase-adminsdk-2gi9p-62140c7764.json'
+  ),
+  databaseURL: 'https://node-test-f2063.firebaseio.com',
+});
 
 const user = {
   username: '36nil',
@@ -33,16 +42,27 @@ const app = express();
 app.use(require('body-parser').urlencoded({ extended: true }));
 
 // Use cookie session
-app.set('trust proxy', 1); // trust first proxy
+// app.set('trust proxy', 1); // trust first proxy
 
-const sessionConfig = {
-  name: '__session',
-  secret: '123456789',
-  maxAge: 24 * 60 * 60 * 1000, // 24 hours
-  secure: app.get('env') === 'production' ? true : false,
-};
+// const sessionConfig = {
+//   name: '__session',
+//   secret: '123456789',
+//   maxAge: 24 * 60 * 60 * 1000, // 24 hours
+//   secure: app.get('env') === 'production' ? true : false,
+// };
 
-app.use(session(sessionConfig));
+// app.use(session(sessionConfig));
+
+app.use(
+  session({
+    store: new FirebaseStore({
+      database: ref.database(),
+    }),
+    secret: 'keyboard cat',
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 // Log requests
 app.use(morgan('dev'));
@@ -103,7 +123,7 @@ app.get('/api/profile', (req, res) => {
 app.get('/api/debug', (req, res) => {
   res.send({
     env: app.get('env'),
-    sessionConfig,
+    // sessionConfig,
     headers: req.headers,
   });
 });

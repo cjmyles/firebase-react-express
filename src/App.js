@@ -55,7 +55,7 @@ class App extends Component {
   async profile() {
     try {
       const response = await fetch('/api/profile', {
-        // credentials: 'include',
+        credentials: 'include',
       });
       const user = await response.json();
       this.setState({ user });
