@@ -68,6 +68,10 @@ node_modules/
 # dotenv environment variables file
 .env
 
+# config
+/**/*/config/production.json
+/**/*/config/development.json
+
 # ====================
 # Client .gitignore
 # ====================
