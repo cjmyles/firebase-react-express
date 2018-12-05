@@ -25,16 +25,25 @@ class App extends Component {
   }
 
   async facebookProfile() {
-    const response = await fetch('/api/profile', { credentials: 'include' });
+    const response = await fetch('/api/profile');
     try {
       const profile = await response.json();
       this.setState({ profile });
     } catch (error) {}
   }
 
+  async debug() {
+    const response = await fetch('/api/debug');
+    try {
+      const debug = await response.json();
+      console.log(debug);
+    } catch (error) {}
+  }
+
   async componentDidMount() {
     this.testAPI();
     this.facebookProfile();
+    this.debug();
   }
 
   render() {

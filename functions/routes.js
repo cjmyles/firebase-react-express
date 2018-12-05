@@ -74,9 +74,10 @@ router.get('/api/logout', (req, res) => {
 
 router.get('/api/debug', (req, res) => {
   res.send({
-    env: app.get('env'),
+    env: process.env.NODE_ENV,
     secure: process.env.NODE_ENV === 'production',
     cookies: req.cookies,
+    headers: req.headers,
   });
 });
 

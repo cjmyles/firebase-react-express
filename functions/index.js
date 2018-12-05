@@ -11,6 +11,9 @@ const app = express();
 
 // Enable Cookie Parser
 app.use(require('cookie-parser')());
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 // Enable Body Parser (as JSON object)
 app.use(require('body-parser').urlencoded({ extended: true }));
 
