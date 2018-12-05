@@ -1,10 +1,10 @@
 # Firebase React Express
 
-Sandbox application to demonstrate the compatibility between a React app and an Express API, both running on Firebase.
+Sandbox application to demonstrate the compatibility between a React app and a NodeJS Express app (or API), tailored for Firebase.
 
-In this particular example the React and Express apps are stored in the same repository and are deployed simulataneously, although they could be broken out if required.
+In this particular example the React and Express apps are stored in the same repository and are deployed simulataneously to Firebase Hosting and Firebase Functions respectively, although they could be broken out if required.
 
-The apps were bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and the Firebase `init` command (as per https://www.youtube.com/watch?v=LOeioOKUKI8&vl=en).
+The React and Express apps were bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and the Firebase [`init`](https://www.youtube.com/watch?v=LOeioOKUKI8&vl=en) command respectively.
 
 The code has been configured to enable local development, as well as deployment to Firebase.
 

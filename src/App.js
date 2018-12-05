@@ -2,115 +2,69 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+const apiUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://us-central1-node-test-f2063.cloudfunctions.net/app/api'
+    : 'http://localhost:5001/node-test-f2063/us-central1/app/api';
+
+const facebookLoginURL = apiUrl + '/facebook';
+const facebookLogoutURL = apiUrl + '/logout';
+
 class App extends Component {
   state = {
-    create: false,
-    read: false,
-    update: false,
-    remove: false,
-    login: false,
-    user: null,
+    message: 'null',
+    profile: null,
   };
 
-  async create() {
-    const response = await fetch('/api/basic', { method: 'POST' });
-    const create = await response.json();
-    this.setState({ create: create && create.success });
-  }
-
-  async read() {
-    const response = await fetch('/api/basic');
-    const read = await response.json();
-    this.setState({ read: read && read.success });
-  }
-
-  async update() {
-    const response = await fetch('/api/basic', { method: 'PUT' });
-    const update = await response.json();
-    this.setState({ update: update && update.success });
-  }
-
-  async remove() {
-    const response = await fetch('/api/basic', { method: 'DELETE' });
-    const remove = await response.json();
-    this.setState({ remove: remove && remove.success });
-  }
-
-  async login() {
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        username: '36nil',
-        password: '123',
-      }),
-    });
-    const login = await response.json();
-    this.setState({ login: login && login.success });
-  }
-
-  async profile() {
+  async testAPI() {
+    const response = await fetch('/api/message');
     try {
-      const response = await fetch('/api/profile', {
-        // credentials: 'include',
-      });
-      const user = await response.json();
-      this.setState({ user });
-    } catch (error) {
-      console.error(error);
-    }
+      const { message } = await response.json();
+      this.setState({ message });
+    } catch (error) {}
   }
 
-  async debug() {
-    const response = await fetch('/api/debug', {
-      // credentials: 'include',
-    });
-    const debug = await response.json();
-    console.log(debug);
+  async facebookProfile() {
+    const response = await fetch('/api/profile', { credentials: 'include' });
+    try {
+      const profile = await response.json();
+      this.setState({ profile });
+    } catch (error) {}
   }
 
   async componentDidMount() {
-    this.create();
-    this.read();
-    this.update();
-    this.remove();
-
-    await this.login();
-    this.profile();
-    this.debug();
+    this.testAPI();
+    this.facebookProfile();
   }
 
   render() {
-    const { create, read, update, remove, login, user } = this.state;
+    const { message, profile } = this.state;
 
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <ul className="App-status">
-            <li>Create: {create ? 'true' : 'false'}</li>
-            <li>Read: {read ? 'true' : 'false'}</li>
-            <li>Update: {update ? 'true' : 'false'}</li>
-            <li>Delete: {remove ? 'true' : 'false'}</li>
-            <li>Login: {login ? 'true' : 'false'}</li>
-            <li>
-              User: <code>{user && JSON.stringify(user)}</code>
-            </li>
+            <li>API Response: {message}</li>
+            <li>Authenticated: {profile ? 'true' : 'false'}</li>
+            {profile && (
+              <li>
+                Facebook Profile:{' '}
+                <div>
+                  <pre>{JSON.stringify(profile, null, 2)}</pre>
+                </div>
+              </li>
+            )}
           </ul>
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          {profile ? (
+            <a className="App-link" href={facebookLogoutURL}>
+              Logout
+            </a>
+          ) : (
+            <a className="App-link" href={facebookLoginURL}>
+              Facebook Login
+            </a>
+          )}
         </header>
       </div>
     );
