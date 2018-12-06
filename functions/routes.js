@@ -1,6 +1,6 @@
 const express = require('express');
 const passport = require('./passport');
-const config = require('./config');
+// const config = require('./config');
 const { firebase, admin } = require('./firebase');
 
 // Firebase strips out client side cookies, except `__session`
@@ -16,7 +16,6 @@ const router = express.Router();
 const ensureAuthenticated = async (req, res, next) => {
   try {
     const sessionCookie = req.cookies[SESSION_KEY] || '';
-    console.log(sessionCookie);
     // Verify the session cookie. In this case an additional check is added to detect
     // if the user's Firebase session was revoked, user deleted/disabled, etc.
     const decodedClaims = await admin
@@ -141,7 +140,7 @@ router.get('/api/profile', ensureAuthenticated, (req, res) => {
  * Log a user out.
  */
 router.get('/api/logout', (req, res) => {
-  req.logout();
+  // req.logout(); // Deprecated
   res.clearCookie(SESSION_KEY);
   res.status(204).send();
 });
