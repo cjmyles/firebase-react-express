@@ -110,4 +110,4 @@ This corresponds to the name of the `functions` app we set in `functions/index.j
 exports.app = functions.https.onRequest(app);
 ```
 
-This means that a request such as `/api/message` is proxied to `http://localhost:5001/node-test-f2063/us-central1/app/api/message` in local development and `http://localhost:5001/node-test-f2063/us-central1/app/api/message` in production.
+This means that a request such as `/api/message` is proxied to `http://localhost:5001/node-test-f2063/us-central1/app/api/message` in local development and `https://node-test-f2063.firebaseapp.com/us-central1/app/api/message` in production.
